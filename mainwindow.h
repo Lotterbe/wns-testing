@@ -1,7 +1,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QGridLayout>
+#include <QLabel>
+#include <QLineEdit>
 #include <QMainWindow>
+#include <QStandardItemModel>
+#include <QTableView>
+#include <QTabWidget>
+
+#include <iostream>
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +25,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QStandardItemModel model;
+    QTableView view;
 };
 
 #endif // MAINWINDOW_H
