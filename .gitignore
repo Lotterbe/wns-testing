@@ -1,0 +1,4 @@
+WNSGui.pro.user
+mainwindow.o
+main.o
+moc_mainwindow.o
