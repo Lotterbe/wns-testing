@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "AXI_Wrapper.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -113,11 +114,17 @@ void MainWindow::addTab(int i) {
     QLineEdit* newbaseaddr = new QLineEdit(newwidget);
     newbaseaddr->setToolTip("write in hexadecimal representation");
 
-    QPushButton* newaddbutton = new QPushButton(newwidget);
+    /*QPushButton* newaddbutton = new QPushButton(newwidget);
     newaddbutton->setText("+ row");
     QPushButton* newremovebutton = new QPushButton(newwidget);
     newremovebutton->setText("- row");
-    newremovebutton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    newremovebutton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);*/
+
+    QLabel *rowlabel = new QLabel(newwidget);
+    rowlabel->setText("row number");
+    QSpinBox *rowspin = new QSpinBox(newwidget);
+    rowspin->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    //rowspin->setText("rownumber");
     /*QPushButton* loadbutton = new QPushButton(newwidget);
     loadbutton->setText("load");
     loadbutton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -136,11 +143,11 @@ void MainWindow::addTab(int i) {
     checkbox->setText("(un-)click all");
 
 
-    this->connect(newaddbutton, SIGNAL(clicked(bool)), this, SLOT(addRow()));
-    this->connect(newremovebutton, SIGNAL(clicked(bool)), this, SLOT(removeRow()));
-    //this->connect(loadbutton, SIGNAL(clicked(bool)), this, SLOT(loadFile()));
-    //this->connect(savebutton, SIGNAL(clicked(bool)), this, SLOT(saveFile()));
+    //this->connect(newaddbutton, SIGNAL(clicked(bool)), this, SLOT(addRow()));
+    //this->connect(newremovebutton, SIGNAL(clicked(bool)), this, SLOT(removeRow()));
     this->connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(clickAll(int)));
+    this->connect(newconnectbutton, SIGNAL(clicked(bool)), this, SLOT(transmitData()));
+    this->connect(rowspin, SIGNAL(valueChanged(int)), this, SLOT(changeRow(int)));
 
 
 
@@ -172,15 +179,7 @@ void MainWindow::addTab(int i) {
     bool ok;
     uint32_t d = newmodel->item(0,1)->text().toUInt(&ok, 16);
     //unsigned int d = newmodel->item(0,1)->text().toUInt(&ok, 16);
-    //std::cout << d << std::endl;
-    /*QStandardItem* checkitem = new QStandardItem;
-    newmodel->setItem(0,3,checkitem);
-    checkitem->setCheckable(2);
-    checkitem->setEditable(0);
-    //checkitem->setTextAlignment(Qt::AlignRight);
-    checkitem->setData(Qt::AlignRight, Qt::TextAlignmentRole);*/
-
-    //pCheckBox->setStyleSheet("margin-left:50%; margin-right:50%;");
+    std::cout << d << std::endl;
 
 
 
@@ -197,8 +196,10 @@ void MainWindow::addTab(int i) {
     newgridlayout->addWidget(newbaseaddr,0,1,1,1);
     newgridlayout->addWidget(checkbox,7,3,1,1);
     newgridlayout->addWidget(newview,3,0,4,4);
-    newgridlayout->addWidget(newaddbutton, 7,0,1,1);
-    newgridlayout->addWidget(newremovebutton,8,0,1,1);
+    //newgridlayout->addWidget(newaddbutton, 7,0,1,1);
+    //newgridlayout->addWidget(newremovebutton,8,0,1,1);
+    newgridlayout->addWidget(rowlabel,7,0,1,1);
+    newgridlayout->addWidget(rowspin, 7,1,1,1);
     //newgridlayout->addWidget(loadbutton,0,3,1,1);
     //newgridlayout->addWidget(savebutton,1,3,1,1);
     newgridlayout->addWidget(newconnectbutton,0,2,1,1);
@@ -215,6 +216,7 @@ void MainWindow::addTab(int i) {
     QRegExp rx("[0-9,a-f]{1,8}");
     QValidator *ipvalidator = new QRegExpValidator(rx, this);
     newbaseaddr->setValidator(ipvalidator);
+    //QString("0x%1").arg(par,8, 16, QLatin1Char( '0' ))
 
     //->setValidator(validator);
     //ValidIpAddressRegex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
@@ -224,6 +226,21 @@ void MainWindow::addTab(int i) {
 
 
 }
+void MainWindow::changeRow(int i){
+    QStandardItemModel* actualmodel =  this->tabWidget->currentWidget()->findChild<QStandardItemModel*>();
+    int diff = actualmodel->rowCount() - i;
+    if(diff > 0){
+        for(int k=0; k < diff; k++){
+            this->removeRow();
+        }
+    }
+    else if(diff < 0){
+        for(int k=0; k > diff; k--){
+            this->addRow();
+        }
+    }
+}
+
 
 void MainWindow::removeTab(int i){
     this->tabWidget->removeTab(i);
@@ -257,7 +274,7 @@ void MainWindow::addRow(){
 
     newcheckitem->setCheckable(2);
     newcheckitem->setEditable(0);
-    newitem->setText("name"+QString::number(rownumber));
+    newitem->setText("name" + QString::number(rownumber));
 
     newoffitem->setToolTip("write in hexadecimal representation");
 
@@ -323,19 +340,24 @@ void MainWindow::loadFile(QString fName){
 void MainWindow::fillTable(QString fileName){
 
     QStandardItemModel* actualmodel =  this->tabWidget->currentWidget()->findChild<QStandardItemModel*>();
+    QLineEdit *baseadress = this->tabWidget->currentWidget()->findChild<QLineEdit*>();
+    QSpinBox *rowspin = this->tabWidget->currentWidget()->findChild<QSpinBox*>();
     int numrow = actualmodel->rowCount();
 
     QFile dir(fileName);
-    std::vector<std::string> vw;
-    std::vector<uint32_t> vx,vy;
+    std::cout << fileName.toStdString() << std::endl;
+    std::string base;
+    std::vector<std::string> vw, vx, vy;
+    //std::vector<uint32_t> vx,vy;
     std::vector<int> vz;
-    uint32_t dx,dy;
+    //uint32_t dx,dy;
     int dz;
-    std::string dw;
+    std::string dw, dx, dy;
 
     if (dir.exists())
     {
         std::ifstream file(fileName.toStdString());
+        file >> base;
         while (file >> dw >> dx >> dy >> dz)
         {
            vw.push_back(dw);
@@ -344,30 +366,34 @@ void MainWindow::fillTable(QString fileName){
            vz.push_back(dz);
         }
         file.close();
-    }
-    int num = vw.size();
-    if(vw.size() >  numrow){
-        int add = vw.size() - numrow;
-        for(int j=0; j<add; j++){
-            this->addRow();
+
+        int num = vw.size();
+        if(vw.size() >  numrow){
+            int add = vw.size() - numrow;
+            for(int j=0; j<add; j++){
+                this->addRow();
+            }
+
+        rowspin->setValue(num);
+        }
+        baseadress->setText(QString::fromStdString(base));
+        for(int i = 0; i < num; i++){
+            actualmodel->item(i,0)->setText(QString::fromStdString(vw.at(i)));
+            actualmodel->item(i,1)->setText(QString::fromStdString(vx.at(i)));
+            actualmodel->item(i,2)->setText(QString::fromStdString(vy.at(i)));
+            actualmodel->item(i,3)->setCheckState((Qt::CheckState)vz.at(i));
         }
     }
 
-    for(int i = 0; i < num; i++){
-        actualmodel->item(i,0)->setText(QString::fromStdString(vw.at(i)));
-        actualmodel->item(i,1)->setText(QString::number(vx.at(i)));
-        actualmodel->item(i,2)->setText(QString::number(vy.at(i)));
-        actualmodel->item(i,3)->setCheckState((Qt::CheckState)vz.at(i));
-    }
 }
 
 void MainWindow::saveFile(QString fileName){
     QStandardItemModel* actualmodel =  this->tabWidget->currentWidget()->findChild<QStandardItemModel*>();
+    QLineEdit *baseadress = this->tabWidget->currentWidget()->findChild<QLineEdit*>();
     int numrow = actualmodel->rowCount();
 
     if(fileName ==""){
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Save table as *.txt"), "", tr("Text files (*.txt)"));
-
+        fileName = QFileDialog::getSaveFileName(this, tr("Save table as *.txt"), "", tr("Text files (*.txt)"));
         QFile qF(this->lastSavePaths);
             qF.open(QIODevice::WriteOnly);
             QTextStream qTS(&qF);
@@ -378,6 +404,8 @@ void MainWindow::saveFile(QString fileName){
         QFile file(fileName);
         file.open(QIODevice::WriteOnly);
         QTextStream qTSfile(&file);
+        qTSfile << baseadress->text() << "\r\n";
+        //std::cout << baseadress->text().toStdString() << std::endl;
         for(int i=0; i < numrow; i+=1){
             if(actualmodel->item(i,1)->text()!="" && actualmodel->item(i,2)->text()!=""){
                 qTSfile << actualmodel->item(i,0)->text() << "\t" << actualmodel->item(i,1)->text() << "\t" <<
@@ -415,7 +443,7 @@ void MainWindow::actFunc(QAction *action){
                     QFile qF(this->lastSavePaths);
                     qF.open(QIODevice::WriteOnly | QIODevice::Append);
                     QTextStream qTS(&qF);
-                    qTS << name + QString::fromStdString("\n");
+                    qTS << name << endl;
                     qF.close();
                 }
 
@@ -445,7 +473,7 @@ void MainWindow::actFunc(QAction *action){
                     QFile qF(this->lastSavePaths);
                     qF.open(QIODevice::WriteOnly | QIODevice::Append);
                     QTextStream qTS(&qF);
-                    qTS << QString::fromStdString("\n") + fileName;
+                    qTS << endl << fileName;
 
                     qF.close();
                 }
@@ -453,5 +481,42 @@ void MainWindow::actFunc(QAction *action){
             }
         }
     }
+
+}
+
+
+void MainWindow::transmitData(){
+    QLineEdit *baseadress = this->tabWidget->currentWidget()->findChild<QLineEdit*>();
+    //QString base = baseadress->text();
+    bool ok;
+    std::cout << "initalize AXI_Wrapper" << std::endl;
+    uint32_t base = baseadress->text().toUInt(&ok, 16);
+    //std::cout << "base text" << base.toStdString() << std::endl;
+    std::cout << "uint32 baseadress" << base << std::endl;
+    AXI_Wrapper* wrapper = new AXI_Wrapper(base);
+    if(wrapper->getFD() == -1){
+        std::cout << "Could not initialize AXI_Wrapper object, because you are missing sudo rights" << std::endl;
+    }
+    else{
+        //wrapper.AXI_Wrapper(base->toUInt(ok, 16));
+        QStandardItemModel* actualmodel =  this->tabWidget->currentWidget()->findChild<QStandardItemModel*>();
+        int numrow = actualmodel->rowCount();
+        for(int i=0; i<numrow; i++){
+            if(actualmodel->item(i,3)->checkState() == 2){
+                ;
+            }
+            else{
+
+                //std::cout << "offset for read" << offset << std::endl;
+                uint32_t value = wrapper->read(actualmodel->item(i,1)->text().toUInt(&ok, 16));
+
+                std::cout << "value" << value << std::endl;
+                actualmodel->item(i,2)->setText(QString("0x%1").arg(value,8, 16, QLatin1Char( '0' )));
+                std::cout << "value changed" << std::endl;
+            }
+        }
+
+    }
+
 
 }

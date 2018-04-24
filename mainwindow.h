@@ -13,6 +13,7 @@
 #include <QPushButton>
 #include <QRegExp>
 #include <QSizePolicy>
+#include <QSpinBox>
 #include <QStandardItemModel>
 #include <QStringList>
 #include <QTableView>
@@ -44,12 +45,14 @@ public slots:
     void addRow();
     void addTab(int i);
     void addTabButtonclicked(int i);
+    void changeRow(int i);
     void clickAll(int i);
     void fillTable(QString fileName);
     void loadFile(QString fName = "noFile");
     void removeRow();
     void removeTab(int i);
     void saveFile(QString fileName = "");
+    void transmitData();
 
 
 private:

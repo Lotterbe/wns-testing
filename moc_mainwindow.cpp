@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[17];
-    char stringdata0[144];
+    QByteArrayData data[19];
+    char stringdata0[167];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -38,20 +38,23 @@ QT_MOC_LITERAL(5, 36, 6), // "addRow"
 QT_MOC_LITERAL(6, 43, 6), // "addTab"
 QT_MOC_LITERAL(7, 50, 1), // "i"
 QT_MOC_LITERAL(8, 52, 19), // "addTabButtonclicked"
-QT_MOC_LITERAL(9, 72, 8), // "clickAll"
-QT_MOC_LITERAL(10, 81, 9), // "fillTable"
-QT_MOC_LITERAL(11, 91, 8), // "fileName"
-QT_MOC_LITERAL(12, 100, 8), // "loadFile"
-QT_MOC_LITERAL(13, 109, 5), // "fName"
-QT_MOC_LITERAL(14, 115, 9), // "removeRow"
-QT_MOC_LITERAL(15, 125, 9), // "removeTab"
-QT_MOC_LITERAL(16, 135, 8) // "saveFile"
+QT_MOC_LITERAL(9, 72, 9), // "changeRow"
+QT_MOC_LITERAL(10, 82, 8), // "clickAll"
+QT_MOC_LITERAL(11, 91, 9), // "fillTable"
+QT_MOC_LITERAL(12, 101, 8), // "fileName"
+QT_MOC_LITERAL(13, 110, 8), // "loadFile"
+QT_MOC_LITERAL(14, 119, 5), // "fName"
+QT_MOC_LITERAL(15, 125, 9), // "removeRow"
+QT_MOC_LITERAL(16, 135, 9), // "removeTab"
+QT_MOC_LITERAL(17, 145, 8), // "saveFile"
+QT_MOC_LITERAL(18, 154, 12) // "transmitData"
 
     },
     "MainWindow\0actFunc\0\0QAction*\0action\0"
     "addRow\0addTab\0i\0addTabButtonclicked\0"
-    "clickAll\0fillTable\0fileName\0loadFile\0"
-    "fName\0removeRow\0removeTab\0saveFile"
+    "changeRow\0clickAll\0fillTable\0fileName\0"
+    "loadFile\0fName\0removeRow\0removeTab\0"
+    "saveFile\0transmitData"
 };
 #undef QT_MOC_LITERAL
 
@@ -61,7 +64,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      12,   14, // methods
+      14,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -69,18 +72,20 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,   74,    2, 0x0a /* Public */,
-       5,    0,   77,    2, 0x0a /* Public */,
-       6,    1,   78,    2, 0x0a /* Public */,
-       8,    1,   81,    2, 0x0a /* Public */,
-       9,    1,   84,    2, 0x0a /* Public */,
-      10,    1,   87,    2, 0x0a /* Public */,
-      12,    1,   90,    2, 0x0a /* Public */,
-      12,    0,   93,    2, 0x2a /* Public | MethodCloned */,
-      14,    0,   94,    2, 0x0a /* Public */,
-      15,    1,   95,    2, 0x0a /* Public */,
-      16,    1,   98,    2, 0x0a /* Public */,
-      16,    0,  101,    2, 0x2a /* Public | MethodCloned */,
+       1,    1,   84,    2, 0x0a /* Public */,
+       5,    0,   87,    2, 0x0a /* Public */,
+       6,    1,   88,    2, 0x0a /* Public */,
+       8,    1,   91,    2, 0x0a /* Public */,
+       9,    1,   94,    2, 0x0a /* Public */,
+      10,    1,   97,    2, 0x0a /* Public */,
+      11,    1,  100,    2, 0x0a /* Public */,
+      13,    1,  103,    2, 0x0a /* Public */,
+      13,    0,  106,    2, 0x2a /* Public | MethodCloned */,
+      15,    0,  107,    2, 0x0a /* Public */,
+      16,    1,  108,    2, 0x0a /* Public */,
+      17,    1,  111,    2, 0x0a /* Public */,
+      17,    0,  114,    2, 0x2a /* Public | MethodCloned */,
+      18,    0,  115,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -88,12 +93,14 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::Int,    7,
     QMetaType::Void, QMetaType::Int,    7,
     QMetaType::Void, QMetaType::Int,    7,
-    QMetaType::Void, QMetaType::QString,   11,
-    QMetaType::Void, QMetaType::QString,   13,
+    QMetaType::Void, QMetaType::Int,    7,
+    QMetaType::Void, QMetaType::QString,   12,
+    QMetaType::Void, QMetaType::QString,   14,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,    7,
-    QMetaType::Void, QMetaType::QString,   11,
+    QMetaType::Void, QMetaType::QString,   12,
+    QMetaType::Void,
     QMetaType::Void,
 
        0        // eod
@@ -109,14 +116,16 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 1: _t->addRow(); break;
         case 2: _t->addTab((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 3: _t->addTabButtonclicked((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 4: _t->clickAll((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 5: _t->fillTable((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 6: _t->loadFile((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 7: _t->loadFile(); break;
-        case 8: _t->removeRow(); break;
-        case 9: _t->removeTab((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 10: _t->saveFile((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 11: _t->saveFile(); break;
+        case 4: _t->changeRow((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 5: _t->clickAll((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 6: _t->fillTable((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 7: _t->loadFile((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 8: _t->loadFile(); break;
+        case 9: _t->removeRow(); break;
+        case 10: _t->removeTab((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 11: _t->saveFile((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 12: _t->saveFile(); break;
+        case 13: _t->transmitData(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -158,13 +167,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 12)
+        if (_id < 14)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 14;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 12)
+        if (_id < 14)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 14;
     }
     return _id;
 }
