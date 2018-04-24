@@ -12,7 +12,7 @@
 class AXI_Wrapper
 {
         private:
-                uint32_t base;
+                uint32_t base, length;
 				uint32_t *MappedBase32;
                 void *MappedBase;
 				std::vector<uint32_t> Emu_data;
@@ -23,6 +23,7 @@ class AXI_Wrapper
 
         public:
                 AXI_Wrapper();
+				AXI_Wrapper(uint32_t Length);
                 
 				int Init(uint32_t baseAddr);
 				int Init_Emu(uint32_t baseAddr);

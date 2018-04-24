@@ -3,6 +3,19 @@
 
 	AXI_Wrapper::AXI_Wrapper(void)
     {
+		length = 128*1024;
+		emu = false;
+		fd_open = false;
+		mapped = false;
+		base = 0x00000000;
+		MappedBase = NULL;
+		MappedBase32 = NULL;
+		Emu_data.reserve(length/4);
+	}
+	
+	AXI_Wrapper::AXI_Wrapper(uint32_t Length)
+    {
+		length = Length;
 		emu = false;
 		fd_open = false;
 		mapped = false;
@@ -31,7 +44,7 @@
 		emu = false;
 		if(mapped)
 		{
-			munmap(MappedBase, 128*1024);
+			munmap(MappedBase, length);
 			mapped = false;
 		}
 		
@@ -39,7 +52,7 @@
 		fd = openDevMem();
 		if(fd_open)
 		{
-			MappedBase = mmap(NULL, 128*1024, PROT_READ|PROT_WRITE, MAP_SHARED, fd, base);
+			MappedBase = mmap(NULL, length, PROT_READ|PROT_WRITE, MAP_SHARED, fd, base);
 			MappedBase32 = (uint32_t *) MappedBase;
 		}
 		else
@@ -68,10 +81,10 @@
 		emu = true;
 		if(mapped)
 		{
-			munmap(MappedBase, 128*1024);
+			munmap(MappedBase, length);
 			mapped = false;
 		}
-		for(int i = 0; i < 1024*32; i++)
+		for(int i = 0; i < length/4; i++)
 		{
 			Emu_data.push_back(0x12345678);
 		}
@@ -90,7 +103,7 @@
 			}
 			else
 			{
-				munmap(MappedBase, 128*1024);
+				munmap(MappedBase, length);
 			}			
 			mapped = false;
 		}
@@ -101,9 +114,10 @@
 
 	uint32_t AXI_Wrapper::read(uint32_t offset)
 	{
-		if(offset > 128*1024)
+		if(offset > length-1)
 		{
 			std::cout << "Error in AXI_Wrapper::read(uint32_t offset): Offset ist larger than the mapped area. Returning standard value 0x00000000." << std::endl;
+			return 0;
 		}
 	
 		uint32_t value;
@@ -126,7 +140,7 @@
 
 	int AXI_Wrapper::write(uint32_t offset, uint32_t value)
 	{
-		if(offset > 128*1024)
+		if(offset > length-1)
 		{
 			std::cout << "Error in AXI_Wrapper::write(uint32_t offset, uint32_t value): Offset ist larger than the mapped area." << std::endl;
 			return 1;
