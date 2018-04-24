@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[19];
-    char stringdata0[167];
+    QByteArrayData data[22];
+    char stringdata0[196];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -40,21 +40,24 @@ QT_MOC_LITERAL(7, 50, 1), // "i"
 QT_MOC_LITERAL(8, 52, 19), // "addTabButtonclicked"
 QT_MOC_LITERAL(9, 72, 9), // "changeRow"
 QT_MOC_LITERAL(10, 82, 8), // "clickAll"
-QT_MOC_LITERAL(11, 91, 9), // "fillTable"
-QT_MOC_LITERAL(12, 101, 8), // "fileName"
-QT_MOC_LITERAL(13, 110, 8), // "loadFile"
-QT_MOC_LITERAL(14, 119, 5), // "fName"
-QT_MOC_LITERAL(15, 125, 9), // "removeRow"
-QT_MOC_LITERAL(16, 135, 9), // "removeTab"
-QT_MOC_LITERAL(17, 145, 8), // "saveFile"
-QT_MOC_LITERAL(18, 154, 12) // "transmitData"
+QT_MOC_LITERAL(11, 91, 8), // "clickBox"
+QT_MOC_LITERAL(12, 100, 14), // "QStandardItem*"
+QT_MOC_LITERAL(13, 115, 4), // "item"
+QT_MOC_LITERAL(14, 120, 9), // "fillTable"
+QT_MOC_LITERAL(15, 130, 8), // "fileName"
+QT_MOC_LITERAL(16, 139, 8), // "loadFile"
+QT_MOC_LITERAL(17, 148, 5), // "fName"
+QT_MOC_LITERAL(18, 154, 9), // "removeRow"
+QT_MOC_LITERAL(19, 164, 9), // "removeTab"
+QT_MOC_LITERAL(20, 174, 8), // "saveFile"
+QT_MOC_LITERAL(21, 183, 12) // "transmitData"
 
     },
     "MainWindow\0actFunc\0\0QAction*\0action\0"
     "addRow\0addTab\0i\0addTabButtonclicked\0"
-    "changeRow\0clickAll\0fillTable\0fileName\0"
-    "loadFile\0fName\0removeRow\0removeTab\0"
-    "saveFile\0transmitData"
+    "changeRow\0clickAll\0clickBox\0QStandardItem*\0"
+    "item\0fillTable\0fileName\0loadFile\0fName\0"
+    "removeRow\0removeTab\0saveFile\0transmitData"
 };
 #undef QT_MOC_LITERAL
 
@@ -64,7 +67,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      14,   14, // methods
+      15,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -72,20 +75,21 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,   84,    2, 0x0a /* Public */,
-       5,    0,   87,    2, 0x0a /* Public */,
-       6,    1,   88,    2, 0x0a /* Public */,
-       8,    1,   91,    2, 0x0a /* Public */,
-       9,    1,   94,    2, 0x0a /* Public */,
-      10,    1,   97,    2, 0x0a /* Public */,
-      11,    1,  100,    2, 0x0a /* Public */,
-      13,    1,  103,    2, 0x0a /* Public */,
-      13,    0,  106,    2, 0x2a /* Public | MethodCloned */,
-      15,    0,  107,    2, 0x0a /* Public */,
-      16,    1,  108,    2, 0x0a /* Public */,
-      17,    1,  111,    2, 0x0a /* Public */,
-      17,    0,  114,    2, 0x2a /* Public | MethodCloned */,
+       1,    1,   89,    2, 0x0a /* Public */,
+       5,    0,   92,    2, 0x0a /* Public */,
+       6,    1,   93,    2, 0x0a /* Public */,
+       8,    1,   96,    2, 0x0a /* Public */,
+       9,    1,   99,    2, 0x0a /* Public */,
+      10,    1,  102,    2, 0x0a /* Public */,
+      11,    1,  105,    2, 0x0a /* Public */,
+      14,    1,  108,    2, 0x0a /* Public */,
+      16,    1,  111,    2, 0x0a /* Public */,
+      16,    0,  114,    2, 0x2a /* Public | MethodCloned */,
       18,    0,  115,    2, 0x0a /* Public */,
+      19,    1,  116,    2, 0x0a /* Public */,
+      20,    1,  119,    2, 0x0a /* Public */,
+      20,    0,  122,    2, 0x2a /* Public | MethodCloned */,
+      21,    0,  123,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -94,12 +98,13 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::Int,    7,
     QMetaType::Void, QMetaType::Int,    7,
     QMetaType::Void, QMetaType::Int,    7,
-    QMetaType::Void, QMetaType::QString,   12,
-    QMetaType::Void, QMetaType::QString,   14,
+    QMetaType::Void, 0x80000000 | 12,   13,
+    QMetaType::Void, QMetaType::QString,   15,
+    QMetaType::Void, QMetaType::QString,   17,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,    7,
-    QMetaType::Void, QMetaType::QString,   12,
+    QMetaType::Void, QMetaType::QString,   15,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -118,14 +123,15 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 3: _t->addTabButtonclicked((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 4: _t->changeRow((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 5: _t->clickAll((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 6: _t->fillTable((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 7: _t->loadFile((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 8: _t->loadFile(); break;
-        case 9: _t->removeRow(); break;
-        case 10: _t->removeTab((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 11: _t->saveFile((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 12: _t->saveFile(); break;
-        case 13: _t->transmitData(); break;
+        case 6: _t->clickBox((*reinterpret_cast< QStandardItem*(*)>(_a[1]))); break;
+        case 7: _t->fillTable((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 8: _t->loadFile((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 9: _t->loadFile(); break;
+        case 10: _t->removeRow(); break;
+        case 11: _t->removeTab((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 12: _t->saveFile((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 13: _t->saveFile(); break;
+        case 14: _t->transmitData(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -167,13 +173,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 14)
+        if (_id < 15)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 14;
+        _id -= 15;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 14)
+        if (_id < 15)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 14;
+        _id -= 15;
     }
     return _id;
 }

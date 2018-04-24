@@ -532,9 +532,7 @@ void MainWindow::transmitData(){
                 uint32_t value = wrapper->read(offset);
                 actualmodel->item(i,2)->setText(QString("0x%1").arg(value,8, 16, QLatin1Char( '0' )));
             }
-            std::cout << "*" ;
         }
-        std::cout << std::endl;
 
     }
 

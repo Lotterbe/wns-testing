@@ -47,6 +47,7 @@ public slots:
     void addTabButtonclicked(int i);
     void changeRow(int i);
     void clickAll(int i);
+    void clickBox(QStandardItem *item);
     void fillTable(QString fileName);
     void loadFile(QString fName = "noFile");
     void removeRow();
@@ -57,13 +58,9 @@ public slots:
 
 private:
     QString const lastSavePaths;
-    //QString const tmpCfgFile;
 
     Ui::MainWindow *ui;
-    //QStandardItemModel *model = new QStandardItemModel;
-    //QTableView *view = new QTableView;
     QTabWidget *tabWidget = new QTabWidget;
-   // QPushButton *addbutton;
 
 
 
