@@ -7,13 +7,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     lastSavePaths("LAST_SAVE_PATHS.txt")
 {
+
     // SETUP UI
 
     ui->setupUi(this);
-
-
     this->setCentralWidget(this->tabWidget);
-
     this->ui->mainToolBar->hide();
 
 
@@ -29,17 +27,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QWidget* addwidget = new QWidget();
     this->tabWidget->addTab(addwidget, "+");
+
     QLabel *label = new QLabel(addwidget);
     label->setText("Please click the + to add a new tab.");
+
     QGridLayout *addLayout = new QGridLayout(addwidget);
     addLayout->addWidget(label);
     addwidget->setLayout(addLayout);
 
     this->addTab(0);
-
     this->tabWidget->setTabsClosable(1);
     tabWidget->tabBar()->tabButton(1, QTabBar::RightSide)->resize(0, 0);
 
+    // Lädt zuletzt gespeicherte oder geöffnete Datei
 
     int i = 0;
 
@@ -49,7 +49,6 @@ MainWindow::MainWindow(QWidget *parent) :
         QTextStream qTS(&qF);
         while(!qTS.atEnd()) {
             qTS >> qS;
-            //std::cout << qS.toStdString() << std::endl;
             if(qS != ""){
                 if(i >  0){
                     this->addTab(i);
@@ -68,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     // Signals and Slots
+
     this->connect(this->tabWidget, SIGNAL(tabBarClicked(int)),this, SLOT(addTabButtonclicked(int)));
     this->connect(this->tabWidget->tabBar(), SIGNAL(tabCloseRequested(int)), this, SLOT(removeTab(int)));
 
@@ -107,32 +107,36 @@ void MainWindow::addTab(int i) {
 
     QLabel* newlabel = new QLabel(newwidget);
     newlabel->setText("Base adress:");
+
     QLineEdit* newbaseaddr = new QLineEdit(newwidget);
     newbaseaddr->setToolTip("write in hexadecimal representation");
 
     QLabel *rowlabel = new QLabel(newwidget);
     rowlabel->setText("row number");
+
     QSpinBox *rowspin = new QSpinBox(newwidget);
     rowspin->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
     QPushButton* newconnectbutton = new QPushButton(newwidget);
     newconnectbutton->setText("transmit");
     newconnectbutton->setStyleSheet("background-color: grey; border-color: grey; color: white; font: 10px; ");
     newconnectbutton->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    //newconnectbutton->setStyle(QStyleOptionButton::Flat);
+
     QWidget* spacew = new QWidget(newwidget);
     spacew->setFixedHeight(10);
 
     QCheckBox* checkbox = new QCheckBox(newwidget);
     checkbox->setText("(un-)click all");
 
+    // Signals and Slots
     this->connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(clickAll(int)));
     this->connect(newconnectbutton, SIGNAL(clicked(bool)), this, SLOT(transmitData()));
     this->connect(rowspin, SIGNAL(valueChanged(int)), this, SLOT(changeRow(int)));
 
 
 
-
     // SETUP MODEL
+
     int row = 1;
     int col = 5;
     QStandardItemModel *newmodel = new QStandardItemModel(newwidget);
@@ -143,77 +147,47 @@ void MainWindow::addTab(int i) {
     newmodel->setHeaderData(2, Qt::Horizontal, tr("value"));
     newmodel->setHeaderData(3, Qt::Horizontal, tr("read"));
     newmodel->setHeaderData(4, Qt::Horizontal, tr("write"));
+
     for(int i=0; i < row; i++){
         this->addRow();
         rowspin->setValue(i+1);
     }
 
-    // FÜR READ WRITE !! unsigned int, wegen Compiler??
-    u_int32_t par = 203888026;
-    //unsigned int par =  203888026;
-    QString hex = QString("0x%1").arg(par,8, 16, QLatin1Char( '0' ));
-    //hex.setNum(par, 16);
-
-    //std::cout << hex.toStdString() << std::endl;
-
-    //4294967295
-    //2863311530
-    newmodel->item(0,1)->setText(hex);
-    bool ok;
-    //uint32_t d = newmodel->item(0,1)->text().toUInt(&ok, 16);
-    //unsigned int d = newmodel->item(0,1)->text().toUInt(&ok, 16);
-    //std::cout << d << std::endl;
-
-
     this->connect(newmodel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(clickBox(QStandardItem*)));
 
 
-
     // SETUP VIEW
+
     QTableView *newview = new QTableView(newwidget);
     newview->setModel(newmodel);
     newview->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    //newview->set
 
 
     // tab Layout
+
     newgridlayout->addWidget(newlabel,0,0,1,1);
     newgridlayout->addWidget(newbaseaddr,0,1,1,1);
     newgridlayout->addWidget(checkbox,7,3,1,1);
     newgridlayout->addWidget(newview,3,0,4,4);
-    //newgridlayout->addWidget(newaddbutton, 7,0,1,1);
-    //newgridlayout->addWidget(newremovebutton,8,0,1,1);
     newgridlayout->addWidget(rowlabel,7,0,1,1);
     newgridlayout->addWidget(rowspin, 7,1,1,1);
-    //newgridlayout->addWidget(loadbutton,0,3,1,1);
-    //newgridlayout->addWidget(savebutton,1,3,1,1);
     newgridlayout->addWidget(newconnectbutton,0,2,1,1);
-    //newgridlayout->addWidget(spacew, 1,0,1,5);
-
-    //newconnectbutton->setStyleSheet("font: bold 14px; min-width: 10em;padding: 6px");
 
     newwidget->setLayout(newgridlayout);
 
     // Validators
 
-    //QRegExp rx("(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])");
-    //QRegExp rx("?:1\d?\d?|2(?:[0-4]\d?|[6789]|5[0-5]?)?|[3-9]\d?|0)(?:\.(?:1\d?\d?|2(?:[0-4]\d?|[6789]|5[0-5]?)?|[3-9]\d?|0)){3}");
     QRegExp rx("[0-9,a-f]{1,8}");
     QValidator *ipvalidator = new QRegExpValidator(rx, this);
     newbaseaddr->setValidator(ipvalidator);
-    //QString("0x%1").arg(par,8, 16, QLatin1Char( '0' ))
-
-    //->setValidator(validator);
-    //ValidIpAddressRegex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
-
-    //ValidHostnameRegex = "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$";
-    // found at https://stackoverflow.com/questions/106179/regular-expression-to-match-dns-hostname-or-ip-address
-
 
 }
+
+
 void MainWindow::changeRow(int i){
     QStandardItemModel* actualmodel =  this->tabWidget->currentWidget()->findChild<QStandardItemModel*>();
     int diff = actualmodel->rowCount() - i;
+
     if(diff > 0){
         for(int k=0; k < diff; k++){
             this->removeRow();
@@ -233,15 +207,15 @@ void MainWindow::removeTab(int i){
         this->tabWidget->setCurrentIndex(i-1);
     }
     this->renameTabs();
-
 }
+
 
 void MainWindow::renameTabs(){
     for(int i=0; i<this->tabWidget->count()-1; i++){
         this->tabWidget->setTabText(i, QString("NW-Stack")+ QString::number(i+1));
     }
-
 }
+
 
 void MainWindow::addRow(){
     QStandardItem* newitem = new QStandardItem;
@@ -250,6 +224,7 @@ void MainWindow::addRow(){
     QStandardItem* newoffitem = new QStandardItem;
     QStandardItem* newvalueitem = new QStandardItem;
     QStandardItemModel* actualmodel =  this->tabWidget->currentWidget()->findChild<QStandardItemModel*>();
+
     int rownumber = actualmodel->rowCount();
 
     actualmodel->appendRow(newitem);
@@ -264,11 +239,9 @@ void MainWindow::addRow(){
     newreaditem->setEditable(0);
     newwriteitem->setCheckable(2);
     newwriteitem->setEditable(0);
+
     newitem->setText("name" + QString::number(rownumber));
-
     newoffitem->setToolTip("write in hexadecimal representation");
-
-
 }
 
 
@@ -295,8 +268,8 @@ void MainWindow::clickAll(int i){
             actualmodel->item(i, 4)->setCheckState(Qt::Checked);
         }
     }
-
 }
+
 
 void MainWindow::clickBox(QStandardItem *item){
     QStandardItemModel* actualmodel =  this->tabWidget->currentWidget()->findChild<QStandardItemModel*>();
@@ -324,11 +297,10 @@ void MainWindow::clickBox(QStandardItem *item){
                 }
         }
     }
-
 }
 
-void MainWindow::loadFile(QString fName){
 
+void MainWindow::loadFile(QString fName){
     if(fName=="noFile"){
         fName = QFileDialog::getOpenFileName(this, tr("Load tab"), "", tr("Text files (*.txt)"));
 
@@ -350,8 +322,8 @@ void MainWindow::loadFile(QString fName){
     }
 
     this->renameTabs();
-
 }
+
 
 void MainWindow::fillTable(QString fileName){
 
@@ -361,12 +333,9 @@ void MainWindow::fillTable(QString fileName){
     int numrow = actualmodel->rowCount();
 
     QFile dir(fileName);
-    //std::cout << fileName.toStdString() << std::endl;
     std::string base;
     std::vector<std::string> vw, vx, vy;
-    //std::vector<uint32_t> vx,vy;
     std::vector<int> vz;
-    //uint32_t dx,dy;
     int dz;
     std::string dw, dx, dy;
 
@@ -400,12 +369,13 @@ void MainWindow::fillTable(QString fileName){
             actualmodel->item(i,3)->setCheckState((Qt::CheckState)vz.at(i));
         }
     }
-
 }
+
 
 void MainWindow::saveFile(QString fileName){
     QStandardItemModel* actualmodel =  this->tabWidget->currentWidget()->findChild<QStandardItemModel*>();
     QLineEdit *baseadress = this->tabWidget->currentWidget()->findChild<QLineEdit*>();
+
     int numrow = actualmodel->rowCount();
 
     if(fileName ==""){
@@ -460,11 +430,9 @@ void MainWindow::actFunc(QAction *action){
                     qTS << name << endl;
                     qF.close();
                 }
-
             }
-
         }
-        if(action->text()=="load tabs"){
+        else if(action->text()=="load tabs"){
             QString dirName = QFileDialog::getExistingDirectory(this, tr("Load tabs from directory"));
             if(dirName != ""){
                 QDir dir = QDir(dirName);
@@ -487,11 +455,9 @@ void MainWindow::actFunc(QAction *action){
 
                     qF.close();
                 }
-
             }
         }
     }
-
 }
 
 
@@ -500,21 +466,19 @@ void MainWindow::transmitData(){
     std::cout << "*******************************************************************" << std::endl;
     std::cout << "************************** transmit data **************************" << std::endl;
     std::cout << "*******************************************************************" << std::endl << std::endl;
+
     QLineEdit *baseadress = this->tabWidget->currentWidget()->findChild<QLineEdit*>();
-    //QString base = baseadress->text();
     bool ok;
-    std::cout << "initalize AXI_Wrapper" << std::endl;
     uint32_t base = baseadress->text().toUInt(&ok, 16);
-    //std::cout << "base text" << base << std::endl;
-    //std::cout << "uint32 baseadress" << base << std::endl;
     AXI_Wrapper* wrapper = new AXI_Wrapper();
-    int map = wrapper->Init_Emu(base);
+    std::cout << "initalized AXI_Wrapper" << std::endl;
+    int map = wrapper->Init_Emu(base); //Emulator
+    //int map = wrapper->Init(base); // sudo-Rechte
 
     if(map == 1){
         std::cout << "Could not initialize AXI_Wrapper object, because you are missing sudo rights" << std::endl;
     }
     else{
-        //wrapper.AXI_Wrapper(base->toUInt(ok, 16));
         QStandardItemModel* actualmodel =  this->tabWidget->currentWidget()->findChild<QStandardItemModel*>();
         int numrow = actualmodel->rowCount();
 
@@ -524,19 +488,11 @@ void MainWindow::transmitData(){
             if(actualmodel->item(i,3)->checkState() == 0){
                 uint32_t value = actualmodel->item(i,2)->text().toUInt(&ok, 16);
                 wrapper->write(offset, value);
-
             }
             else{
-
-                //std::cout << "offset for read" << offset << std::endl;
                 uint32_t value = wrapper->read(offset);
                 actualmodel->item(i,2)->setText(QString("0x%1").arg(value,8, 16, QLatin1Char( '0' )));
             }
-            std::cout << "*" ;
         }
-        std::cout << std::endl;
-
     }
-
-
 }
